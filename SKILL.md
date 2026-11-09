@@ -16,7 +16,7 @@ The style reference is a channel studied privately (`references/`: STYLE_BIBLE.m
 - Never say the channel's name in a voice-over or description.
 
 User rules that apply:
-- No captions or labels in the video.
+- Captions ON: one spoken word at a time, burned in (see "Captions" below). No other labels or text in the video.
 - English only.
 - Voice: one steady tone.
 - Jokes are researched real facts.
@@ -78,6 +78,16 @@ User rules that apply:
     - QA: `python scripts/short_qa.py final.mp4 out/<name>/qa shots.json` checks every frame for black, white, frozen and pop frames, plus loudness and sheets.
     - Fix anything it finds, then run a deep Opus audit.
 11. **Deliver.** SendUserFile the final mp4, update memory, write notes.
+
+## Captions (on by default; `templates/bridge/captions.tsx`)
+- Matches the reference: one word at a time; a word of 3 letters or fewer joins the next one if it follows within 0.25 s ("a cannonball", "you were"), max 14 characters. Lowercase, punctuation stripped, apostrophes kept.
+- Montserrat ExtraBold 78 px at 1080x1920, white fill, black outline (13 px stroke, ~6.5 px visible), soft shadow, centred at 67 % of frame height over the characters' legs, max 86 % width.
+- Hard swap on each word, no pop or bounce. A caption holds through pauses under 0.4 s, then clears.
+- Emphasis is optional: mark at most one punch word per sentence with `"emph": true` in words.json; it renders yellow #FFD23F.
+- Setup per short: copy `node_modules/@fontsource/montserrat/files/montserrat-latin-800-normal.woff2` to `public/fonts/Montserrat-ExtraBold.woff2`, and the hand-fixed `words.json` to `public/<name>/words.json`. `Bridge.tsx` renders `<Captions src={staticFile("<name>/words.json")} />` above the picture and the flash.
+- Captions are timed by the same words.json as the picture and sound, so fix word timings before the final render.
+- Look checks: inputProps `{ post: { captions: false } }` turns them off for clean stills and side-by-sides against the reference (the reference reports already mask the caption band).
+- Keep faces clear: if a close-up puts a face in the 60-74 % band, raise the lens or reframe rather than moving the caption.
 
 ## Final look values (bridge after 4 verifier rounds; all in `templates/bridge/`)
 Start every new short from `templates/bridge/` (copy to `src/videos/<name>/`): the look lives in these values, the
